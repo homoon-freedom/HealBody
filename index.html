@@ -87,6 +87,17 @@
                 .back-sub-item { background: rgba(255,255,255,0.15); padding: 15px; border-radius: 12px; font-size: 0.85rem; margin-top: 10px; line-height: 1.6; white-space: pre-line; }
         
         .close-btn { position: absolute; top: -55px; right: 0; background: none; border: none; color: white; font-size: 3rem; cursor: pointer; }
+  /* CSS 추가 */
+.tci-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.2);
+    margin-right: 5px;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
     </style>
 </head>
 <body>
@@ -486,19 +497,30 @@ function closeModal(e) {
             document.getElementById('flipCard').classList.toggle('flipped');
         }
 
-        function filterSymptoms() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            document.querySelectorAll('.index-section').forEach(section => {
-                if (section.id === 'appendix') return;
-                let match = false;
-                section.querySelectorAll('li').forEach(li => {
-                    if (li.innerText.toLowerCase().includes(query)) {
-                        li.style.display = ""; match = true;
-                    } else { li.style.display = "none"; }
-                });
-                section.style.display = match ? "" : "none";
-            });
-        }
+// filterSymptoms 함수 내부에 추가 제안
+function filterSymptoms() {
+    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+    document.querySelectorAll('.index-section').forEach(section => {
+        if (section.id === 'appendix') return;
+        let match = false;
+        section.querySelectorAll('li').forEach(li => {
+            const btn = li.querySelector('button');
+            const text = btn.innerText.toLowerCase();
+            if (text.includes(query)) {
+                li.style.display = "";
+                match = true;
+                // 검색어 강조 (선택 사항)
+                if(query !== "") {
+                    btn.innerHTML = it[0].replace(new RegExp(query, 'gi'), (m) => `<span style="background: #ffeb3b;">${m}</span>`);
+                }
+            } else { 
+                li.style.display = "none"; 
+            }
+        });
+        section.style.display = match ? "" : "none";
+    });
+}
+
 
         // 초기화
         const mainContent = document.getElementById('mainContent');
