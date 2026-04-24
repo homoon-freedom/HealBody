@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>슬림 사이드바 - 중앙 플립 카드</title>
+    <style>
+        /* 기본 설정 */
+        html { scroll-behavior: smooth; scroll-padding-top: 40px; }
+        body { display: flex; margin: 0; font-family: 'Pretendard', sans-serif; background-color: #fcfcfc; }
+
+        /* 사이드바 */
+        .sidebar {
+            width: 60px; height: 100vh; background: #fff; position: fixed;
+            top: 0; left: 0; display: flex; flex-direction: column;
+            align-items: center; box-shadow: 2px 0 10px rgba(0,0,0,0.05); z-index: 1000;
+        }
+        .sidebar a {
+            text-decoration: none; color: #888; width: 100%; padding: 12px 0;
+            text-align: center; font-size: 24px; font-weight: 800; transition: 0.2s;
+        }
+        .sidebar a:hover { background: #f0f7ff; color: #007bff; }
+        .sidebar a.active { background: #007bff; color: #fff; }
+
+        /* 콘텐츠 */
+        .content { margin-left: 60px; padding: 60px 40px; width: calc(100% - 60px); max-width: 1000px; }
+        .index-section { padding: 40px 0; border-bottom: 1px solid #eee; }
+        .index-section h2 { border-left: 5px solid #007bff; padding-left: 10px; margin-bottom: 20px; font-size: 1.5rem; }
+
+        /* 상자 리스트 (3열) */
+        .link-grid { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; padding: 0; }
+        .link-grid li { width: calc((100% / 3) - (20px / 3)); }
+        .link-grid button {
+            width: 100%; height: 50px; background: #fff; border: 1px solid #e5e7eb;
+            border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 500;
+            transition: all 0.2s;
+        }
+        .link-grid button:hover { border-color: #007bff; color: #007bff; background: #f8fbff; }
+
+        /* --- 모달 (중앙 정렬 제어) --- */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 2000; 
+            justify-content: center; align-items: center; /* 자식 요소를 정중앙에 배치 */
+            backdrop-filter: blur(3px);
+        }
+        .modal.show { display: flex; }
+
+        /* --- 카드 크기 축소 및 설정 --- */
+        .card-container {
+            width: 280px;  /* 기존 320px에서 축소 */
+            height: 380px; /* 기존 450px에서 축소 */
+            perspective: 1000px;
+            position: relative;
+        }
+        .card {
+            width: 100%; height: 100%; position: relative;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d; cursor: pointer;
+        }
+        .card.flipped { transform: rotateY(180deg); }
+
+        .card-face {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); padding: 25px; 
+            text-align: center; box-sizing: border-box;
+        }
+        .card-front { background: white; border: 1px solid #eee; }
+        .card-back { background: #007bff; color: white; transform: rotateY(180deg); }
+
+        /* 닫기 버튼 */
+        .close-btn {
+            position: absolute; top: -45px; right: -5px; background: none; border: none;
+            color: white; font-size: 2.2rem; cursor: pointer; line-height: 1;
+        }
+
+        @media (max-width: 768px) { .link-grid li { width: calc(50% - 5px); } }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <a href="#char-1" class="nav-link active">ㄱ</a>
+        <a href="#char-2" class="nav-link">ㄴ</a>
+        <a href="#char-8" class="nav-link">ㅇ</a>
+    </nav>
+
+    <main class="content">
+        <header>
+            <h1 style="font-size: 1.8rem; margin-bottom: 5px;">인덱스 서비스</h1>
+            <p style="color: #888; font-size: 0.9rem;">항목을 클릭하면 중앙에 상세 카드가 나타납니다.</p>
+        </header>
+        
+        <section id="char-1" class="index-section">
+            <h2>ㄱ</h2>
+            <ul class="link-grid">
+                <li><button onclick="openModal('가나다 서비스', '가나다 서비스의 핵심 기능을 설명하는 뒷면 영역입니다.')">가나다 서비스</button></li>
+                <li><button onclick="openModal('공지사항', '최신 공지 내용을 확인하세요.')">공지사항</button></li>
+                <li><button onclick="openModal('갤러리', '다양한 이미지를 감상하실 수 있습니다.')">갤러리</button></li>
+            </ul>
+        </section>
+
+        <section id="char-2" class="index-section">
+            <h2>ㄴ</h2>
+            <ul class="link-grid">
+                <li><button onclick="openModal('내 정보', '개인정보 설정을 변경할 수 있습니다.')">내 정보</button></li>
+            </ul>
+        </section>
+    </main>
+
+    <div class="modal" id="modal" onclick="closeModal(event)">
+        <div class="card-container">
+            <button class="close-btn" onclick="closeModal(event)">&times;</button>
+            
+            <div class="card" id="flipCard" onclick="flipCard(event)">
+                <div class="card-face card-front">
+                    <div style="font-size: 2rem; margin-bottom: 15px;">📄</div>
+                    <h3 id="modalTitle" style="margin: 0 0 10px 0; color: #333;">제목</h3>
+                    <p style="font-size: 0.85rem; color: #999;">카드를 클릭하면 내용을 확인합니다.</p>
+                </div>
+                <div class="card-face card-back">
+                    <h3 style="margin-bottom: 15px;">상세 안내</h3>
+                    <p id="modalContent" style="font-size: 0.95rem; line-height: 1.5; word-break: keep-all;">내용</p>
+                    <div style="margin-top: 20px; font-size: 0.8rem; opacity: 0.8;">[ 확인 완료 ]</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('modal');
+        const flipCardElement = document.getElementById('flipCard');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+
+        function openModal(title, content) {
+            modalTitle.innerText = title;
+            modalContent.innerText = content;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(e) {
+            // 배경 클릭, 닫기버튼 클릭 시 닫기
+            if (e.target.id === 'modal' || e.target.className === 'close-btn' || e.target.innerText.includes('확인')) {
+                modal.classList.remove('show');
+                flipCardElement.classList.remove('flipped');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function flipCard(e) {
+            e.stopPropagation();
+            flipCardElement.classList.toggle('flipped');
+        }
+
+        // 사이드바 활성화 처리
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
+        });
+    </script>
+
+</body>
+</html>
