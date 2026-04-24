@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>심신 상관관계 & TCI 도감</title>
+    <title>심신 상관관계 & TCI 마스터 도감</title>
     <style>
-        /* 기존 레이아웃 유지 */
-        html { scroll-behavior: smooth; scroll-padding-top: 140px; }
+        /* 기존 레이아웃 및 디자인 유지 */
+        html { scroll-behavior: smooth; scroll-padding-top: 100px; }
         body { display: flex; margin: 0; font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f8fafc; color: #1e293b; }
 
         /* 사이드바 */
         .sidebar { 
-            width: 60px; height: 100vh; background: #fff; position: fixed; 
+            width: 70px; height: 100vh; background: #fff; position: fixed; 
             top: 0; left: 0; display: flex; flex-direction: column; 
             align-items: center; box-shadow: 2px 0 15px rgba(0,0,0,0.05); 
             z-index: 1000; overflow-y: auto; padding-top: 20px;
         }
-        .sidebar a { text-decoration: none; color: #94a3b8 !important; width: 100%; padding: 12px 0; text-align: center; font-size: 14px; font-weight: 700; transition: 0.3s; }
+        .sidebar a { text-decoration: none; color: #94a3b8 !important; width: 100%; padding: 15px 0; text-align: center; font-size: 14px; font-weight: 700; transition: 0.3s; cursor: pointer; }
         .sidebar a:hover { color: #007bff !important; background: #f1f5f9; }
         .sidebar a.active { background: #007bff !important; color: #fff !important; }
 
-        .content { margin-left: 60px; padding: 40px 20px; width: calc(100% - 60px); max-width: 900px; margin-right: auto; }
+        .content { margin-left: 70px; padding: 40px 20px; width: calc(100% - 70px); max-width: 950px; margin-right: auto; }
 
         header { text-align: center; margin-bottom: 30px; }
-        header h1 { font-size: 2.2rem; font-weight: 800; color: #0f172a; margin-bottom: 10px; letter-spacing: -0.02em; }
-        header p { color: #64748b; font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; word-break: keep-all; }
+        header h1 { font-size: 2.4rem; font-weight: 800; color: #0f172a; margin-bottom: 10px; letter-spacing: -0.02em; }
+        header p { color: #64748b; font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; }
 
         .search-container {
             display: flex; justify-content: center; width: 100%; background: rgba(248, 250, 252, 0.95);
@@ -37,41 +37,34 @@
         }
         #searchInput:focus { border-color: #007bff; box-shadow: 0 8px 25px rgba(0,123,255,0.15); }
 
+        /* 증상 섹션 */
         .index-section { padding: 30px 0; border-bottom: 1px solid #e2e8f0; }
         .index-section h2 { font-size: 1.6rem; color: #334155; margin-bottom: 20px; border-left: 6px solid #007bff; padding-left: 15px; }
-
         .link-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; list-style: none; padding: 0; }
         @media (min-width: 768px) { .link-grid { grid-template-columns: repeat(4, 1fr); } }
-        .link-grid button { width: 100%; min-height: 60px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; font-weight: 600; padding: 10px; color: #334155; transition: 0.2s; word-break: keep-all; }
+        .link-grid button { width: 100%; min-height: 60px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; font-weight: 600; padding: 10px; color: #334155; transition: 0.2s; }
         .link-grid button:hover { border-color: #007bff; color: #007bff; transform: translateY(-3px); }
 
-        /* 모달 & 카드 레이아웃 수정 */
+        /* TCI 부록 섹션 디자인 */
+        .appendix-section { margin-top: 80px; padding: 40px; background: #fff; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; }
+        .appendix-section h2 { font-size: 2rem; color: #0f172a; text-align: center; margin-bottom: 40px; }
+        .tci-guide-card { margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px dashed #e2e8f0; }
+        .tci-guide-card:last-child { border-bottom: none; }
+        .tci-guide-title { font-size: 1.5rem; font-weight: 800; color: #007bff; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .tci-guide-content { line-height: 1.8; color: #475569; font-size: 1rem; }
+        .tci-sub-item { background: #f8fafc; padding: 20px; border-radius: 15px; margin: 15px 0; border-left: 4px solid #94a3b8; }
+        .tci-sub-item b { color: #1e293b; font-size: 1.1rem; }
+        .summary-box { background: #eef6ff; padding: 20px; border-radius: 15px; border: 1px solid #d0e4ff; margin-top: 20px; }
+
+        /* 모달 스타일 유지 */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(8px); opacity: 0; transition: 0.3s; }
         .modal.show { display: flex; opacity: 1; }
-        .card-container { width: 340px; height: 600px; perspective: 1000px; max-width: 95vw; }
+        .card-container { width: 340px; height: 480px; perspective: 1000px; max-width: 95vw; }
         .card { width: 100%; height: 100%; position: relative; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
         .card.flipped { transform: rotateY(180deg); }
         .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 24px; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        
-        /* 카드 앞면 */
         .card-front { background: white; justify-content: center; align-items: center; text-align: center; }
-        .card-front .symp-title { font-size: 1.8rem; color: #0f172a; margin-bottom: 20px; font-weight: 800; border-bottom: 5px solid #007bff; display: inline-block; }
-        .card-front .cause-text { font-size: 1.05rem; color: #475569; line-height: 1.65; word-break: keep-all; }
-
-        /* 카드 뒷면 핵심 수정: 상단 증상 + 내용 중앙 정렬 */
         .card-back { background: #007bff; color: white; transform: rotateY(180deg); }
-        .back-header { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 15px; margin-bottom: auto; } /* 상단 고정 */
-        .back-symp-title { font-size: 1.4rem; font-weight: 800; }
-        
-        .back-content { margin: auto 0; overflow-y: auto; padding-right: 5px; } /* 내용 중앙 정렬 및 개별 스크롤 */
-        
-        .section-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.2px; opacity: 0.9; margin-bottom: 8px; font-weight: 700; border-left: 3px solid #fff; padding-left: 10px; margin-top: 15px; }
-        .affirm-box { font-size: 1.1rem; line-height: 1.5; font-style: italic; font-weight: 600; margin-bottom: 15px; word-break: keep-all; text-align: center; }
-        
-        .tci-box { background: rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; font-size: 0.85rem; line-height: 1.6; }
-        .tci-tag { display: inline-block; background: #fff; color: #007bff; padding: 4px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; margin-bottom: 10px; }
-        .tci-item-desc { display: block; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px; margin-top: 8px; font-size: 0.78rem; opacity: 0.95; }
-
         .close-btn { position: absolute; top: -55px; right: 0; background: none; border: none; color: white; font-size: 3rem; cursor: pointer; }
     </style>
 </head>
@@ -90,6 +83,118 @@
         </div>
 
         <div id="mainContent"></div>
+
+        <section id="appendix" class="appendix-section">
+            <h2>📚 부록: TCI 마스터 가이드</h2>
+            
+            <div class="tci-guide-card">
+                <div class="tci-guide-title">🧬 기질과 호르몬의 관계</div>
+                <div class="tci-guide-content">
+                    TCI의 4가지 기질(Temperament)은 뇌의 신경전달물질 시스템과 밀접하게 연결되어 있습니다. 기질은 유전적으로 타고나는 생물학적 반응 경향성입니다.
+                    <div class="tci-sub-item">
+                        • <b>자극추구 (NS) → 도파민:</b> 뇌의 '보상 시스템'. 새로운 자극을 찾고 즉흥적인 결정을 내리는 가속 페달 역할.<br>
+                        • <b>위험회피 (HA) → 세로토닌:</b> '정서적 안정'과 '억제'. 처벌이나 위험을 피하려는 브레이크 역할.<br>
+                        • <b>사회적 민감성 (RD) → 노르에피네프린:</b> '주의 집중' 및 '사회적 보상'. 타인의 인정과 유대를 감지하는 안테나 역할.<br>
+                        • <b>인내력 (P) → 글루타메이트:</b> '보상 없이도 행동 지속'. 목적지까지 멈추지 않게 하는 엔진의 내구성.
+                    </div>
+                </div>
+            </div>
+
+            <div class="tci-guide-card">
+                <div class="tci-guide-title">1. 자율성 (Self-Directedness, SD)</div>
+                <div class="tci-guide-content">
+                    '자기 자신이 상황을 얼마나 잘 통제하고 조절하며, 목표를 향해 나아가는가'를 측정합니다.
+                    <div class="tci-sub-item">
+                        <b>SD1 책임감:</b> 자신의 선택에 대한 주체성. 고(High)는 주도적, 저(Low)는 책임전가.<br>
+                        <b>SD2 목적의식:</b> 삶의 방향성. 고는 명확한 목표, 저도 목적 상실 및 표류.<br>
+                        <b>SD3 유능감:</b> 문제 해결 자신감. 고는 자기효능감, 저도는 무력감과 의존.<br>
+                        <b>SD4 자기수용:</b> 자신의 한계 인정. 고는 자신 존중, 저도는 자책과 비하.<br>
+                        <b>SD5 자기일치:</b> 가치관과 행동의 일치. 고는 좋은 습관의 내면화, 저도는 내적 갈등.
+                    </div>
+                    <div class="summary-box">💡 <b>요약:</b> 자율성이 높으면 독립적이고 유능하며, 낮으면 환경에 좌지우지되고 자존감이 낮습니다.</div>
+                </div>
+            </div>
+
+            <div class="tci-guide-card">
+                <div class="tci-guide-title">2. 연대감 (Cooperativeness, C)</div>
+                <div class="tci-guide-content">
+                    '자기 자신을 사회의 통합적인 한 부분으로 얼마나 수용하고 동일시하는가'를 측정합니다.
+                    <div class="tci-sub-item">
+                        <b>C1 타인수용:</b> 다름을 인정하는 태도. 고는 관대함, 저도는 타인 비판과 거부.<br>
+                        <b>C2 공감:</b> 역지사지 능력. 고는 정서적 교감, 저도는 사회적 무관심.<br>
+                        <b>C3 이타성:</b> 타인을 돕는 의지. 고는 공동의 이익, 저도는 이기심과 실용주의.<br>
+                        <b>C4 관용:</b> 용서와 화해 능력. 고는 너그러움, 저도는 복수심과 뒤끝.<br>
+                        <b>C5 공정성:</b> 원칙 준수. 고는 정직과 존중, 저도는 특권의식과 편법.
+                    </div>
+                    <div class="summary-box">💡 <b>요약:</b> 연대감이 높으면 협력적이고 따뜻하며, 낮으면 독선적이고 고립될 가능성이 있습니다.</div>
+                </div>
+            </div>
+
+            <div class="tci-guide-card">
+                <div class="tci-guide-title">3. 자기초월 (Self-Transcendence, ST)</div>
+                <div class="tci-guide-content">
+                    '자신을 우주의 전체적인 체계의 한 부분으로 얼마나 통합적으로 인식하는가'를 측정합니다.
+                    <div class="tci-sub-item">
+                        <b>ST1 창조적 자기망각:</b> 무아지경 몰입 경험. 고는 깊은 몰입, 저도는 강한 자의식.<br>
+                        <b>ST2 우주적 일체감:</b> 만물과의 연결감. 고는 통합적 사고, 저도는 개별성과 자아분리.<br>
+                        <b>ST3 영적 수용:</b> 초월적 가치 믿음. 고는 삶의 의미 발견, 저도는 합리적 물질주의.
+                    </div>
+                    <div class="summary-box">💡 <b>요약:</b> 자기초월이 높으면 창의적이고 회복탄력성이 좋으며, 낮으면 매우 현실적이고 논리적입니다.</div>
+                </div>
+            </div>
+
+            <div class="tci-guide-card">
+                <div class="tci-guide-title">4. 자극추구 (Novelty Seeking, NS)</div>
+                <div class="tci-guide-content">
+                    새로운 자극이나 잠재적인 보상 신호에 대해 행동이 활성화되는 유전적 경향성(엑셀).
+                    <div class="tci-sub-item">
+                        <b>NS1 탐색적 흥분:</b> 호기심. 고는 새로운 재미 추구, 저도는 관례적 보수성.<br>
+                        <b>NS2 충동성:</b> 의사결정 속도. 고는 즉각 행동, 저도는 신중한 숙고.<br>
+                        <b>NS3 무절제:</b> 자원 소비 방식. 고는 열정적 소비, 저도는 절제와 비축.<br>
+                        <b>NS4 자유분방함:</b> 규율에 대한 태도. 고는 틀을 거부함, 저도는 질서정연함.
+                    </div>
+                </div>
+            </div>
+
+            <div class="tci-guide-card">
+                <div class="tci-guide-title">5. 위험회피 (Harm Avoidance, HA)</div>
+                <div class="tci-guide-content">
+                    위험이나 처벌을 예견할 때 행동이 억제되는 유전적 경향성(브레이크).
+                    <div class="tci-sub-item">
+                        <b>HA1 예기불안:</b> 미래 걱정. 고는 긴장과 미리 걱정, 저도는 낙관주의.<br>
+                        <b>HA2 불확실성 공포:</b> 낯선 상황 반응. 고는 변화 거부, 저도는 자신감과 용기.<br>
+                        <b>HA3 사회적 억제:</b> 낯선 사람 앞의 수줍음. 고는 조심성, 저도는 사교성.<br>
+                        <b>HA4 쉽게 지침:</b> 에너지 수준. 고는 빠른 고갈, 저도는 높은 활기와 회복력.
+                    </div>
+                </div>
+            </div>
+
+            <div class="tci-guide-card">
+                <div class="tci-guide-title">6. 사회적 민감성 (Reward Dependence, RD)</div>
+                <div class="tci-guide-content">
+                    타인의 반응과 같은 사회적 보상 신호에 얼마나 민감한지를 나타내는 안테나.
+                    <div class="tci-sub-item">
+                        <b>RD1 사회적 감수성:</b> 감정 읽기 능력. 고는 따뜻한 공감, 저도는 냉철한 이성.<br>
+                        <b>RD2 의존성:</b> 정서적 유대 욕구. 고는 함께 있길 원함, 저도는 독립적.<br>
+                        <b>RD3 인정 욕구:</b> 타인의 평가 민감도. 고는 남의 시선 의식, 저도는 독자적 행동.<br>
+                        <b>RD4 친밀감:</b> 정서적 따뜻함. 고는 다정다감한 사교가, 저도는 사교적 거리두기.
+                    </div>
+                </div>
+            </div>
+
+            <div class="tci-guide-card">
+                <div class="tci-guide-title">7. 인내력 (Persistence, P)</div>
+                <div class="tci-guide-content">
+                    보상이 없어도 한 번 시작한 행동을 유지하려는 뒷심.
+                    <div class="tci-sub-item">
+                        <b>P1 근면성:</b> 일에 대한 열정. 고는 성실한 노력, 저도는 효율과 태만.<br>
+                        <b>P2 끈기:</b> 좌절 시 버티는 힘. 고는 끝을 보는 마음, 저도는 빠른 포기.<br>
+                        <b>P3 성취욕:</b> 높은 목표 도전. 고는 완벽 기함, 저도는 현재 안주.<br>
+                        <b>P4 완벽주의:</b> 철저한 마무리. 고는 디테일 집착, 저도는 실용적 융통성.
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <div class="modal" id="modal" onclick="closeModal(event)">
@@ -98,24 +203,19 @@
             <div class="card" id="flipCard" onclick="flipCard(event)">
                 <div class="card-face card-front">
                     <div style="font-size: 2.5rem; margin-bottom: 10px;">🌿</div>
-                    <div class="symp-title" id="modalSymptomFront"></div>
-                    <div class="cause-text" id="modalCause"></div>
+                    <div class="symp-title" id="modalSymptomFront" style="font-size: 1.8rem; color: #0f172a; font-weight: 800; border-bottom: 5px solid #007bff;"></div>
+                    <div class="cause-text" id="modalCause" style="font-size: 1rem; color: #475569; margin-top: 20px;"></div>
                     <div style="margin-top: 30px; font-size: 0.75rem; color: #94a3b8; font-weight: 700;">TAP TO FLIP</div>
                 </div>
-                <div class="card-face card-back">
-                    <div class="back-header">
-                        <div class="back-symp-title" id="modalSymptomBack"></div>
-                    </div>
-                    <div class="back-content">
-                        <div class="section-label">긍정 확언</div>
-                        <div class="affirm-box" id="modalAffirm"></div>
-                        
-                        <div class="section-label">TCI 기질 분석</div>
-                        <div class="tci-box">
-                            <div class="tci-tag" id="modalTciTag"></div>
-                            <div id="modalTciDesc" style="word-break: keep-all; font-weight: 500;"></div>
-                            <div id="modalTciDetail" class="tci-item-desc"></div>
-                        </div>
+                <div class="card-face card-back" style="background: #007bff; color: white;">
+                    <div id="modalSymptomBack" style="font-size: 1.4rem; font-weight: 800; text-align: center; margin-bottom: 15px;"></div>
+                    <div style="font-size: 0.75rem; opacity: 0.9; border-left: 3px solid #fff; padding-left: 10px; margin-bottom: 5px;">긍정 확언</div>
+                    <div id="modalAffirm" style="font-size: 1rem; font-style: italic; text-align: center; margin-bottom: 20px;"></div>
+                    <div style="font-size: 0.75rem; opacity: 0.9; border-left: 3px solid #fff; padding-left: 10px; margin-bottom: 10px;">TCI 기질 분석</div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; font-size: 0.85rem;">
+                        <div id="modalTciTag" style="background: #fff; color: #007bff; display: inline-block; padding: 3px 10px; border-radius: 5px; font-weight: 800; margin-bottom: 8px;"></div>
+                        <div id="modalTciDesc" style="font-weight: 600; margin-bottom: 8px;"></div>
+                        <div id="modalTciDetail" style="font-size: 0.75rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px;"></div>
                     </div>
                 </div>
             </div>
@@ -123,12 +223,11 @@
     </div>
 
     <script>
-        // TCI 맵 및 데이터 (이전과 동일)
         const tciMap = {
             "NS1": ["탐색적 흥분(NS1)", "새로운 자극에 호기심을 느끼고 흥분함"],
-            "NS2": ["자유분방(NS2)", "관례에 얽매이지 않고 자유롭게 행동함"],
-            "NS3": ["충동성(NS3)", "생각보다 행동이 앞서고 감정 조절이 급함"],
-            "NS4": ["무절제(NS4)", "절제하기보다 즉각적인 보상을 추구함"],
+            "NS2": ["충동성(NS2)", "생각보다 행동이 앞서고 감정 조절이 급함"],
+            "NS3": ["무절제(NS3)", "절제하기보다 즉각적인 보상을 추구함"],
+            "NS4": ["자유분방(NS4)", "관례에 얽매이지 않고 자유롭게 행동함"],
             "HA1": ["예기불안(HA1)", "앞으로 일어날 일을 미리 걱정하고 긴장함"],
             "HA2": ["불확실성에 대한 두려움(HA2)", "상황이 확실하지 않을 때 불안을 느낌"],
             "HA3": ["수줍음(HA3)", "낯선 사람이나 상황에서 위축됨"],
@@ -297,24 +396,21 @@
         function getTciDetails(rawText) {
             let descriptions = [];
             const sortedKeys = Object.keys(tciMap).sort((a, b) => b.length - a.length);
-
             sortedKeys.forEach(key => {
                 const regex = new RegExp(`(?<![a-zA-Z0-9])${key}(?![a-zA-Z0-9])`, 'g');
                 if (regex.test(rawText)) {
                     descriptions.push(`• <b>${tciMap[key][0]}:</b> ${tciMap[key][1]}`);
                 }
             });
-
             let formattedTag = rawText;
             sortedKeys.forEach(key => {
                 const regex = new RegExp(`(?<![a-zA-Z0-9])${key}(?![a-zA-Z0-9])`, 'g');
                 formattedTag = formattedTag.replace(regex, tciMap[key][0]);
             });
-
             return { tag: formattedTag, details: descriptions.join("<br>") };
         }
 
-        // 검색
+        // 검색 필터
         function filterSymptoms() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
             document.querySelectorAll('.index-section').forEach(section => {
@@ -328,16 +424,18 @@
             });
         }
 
+        // 초기 화면 렌더링
         const main = document.getElementById('mainContent');
         const sidebar = document.getElementById('sidebarNav');
         const groups = {};
 
         function getCho(str) {
-            const cho = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+            const cho = ["ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
             const code = str.charCodeAt(0) - 44032;
             if (code > -1 && code < 11172) {
                 const idx = Math.floor(code / 588);
-                return { "ㄲ":"ㄱ", "ㄸ":"ㄷ", "ㅃ":"ㅂ", "ㅆ":"ㅅ", "ㅉ":"ㅈ" }[cho[idx]] || cho[idx];
+                const choList = ["ㄱ", "ㄱ", "ㄴ", "ㄷ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅂ", "ㅅ", "ㅅ", "ㅇ", "ㅈ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+                return choList[idx];
             }
             return "기타";
         }
@@ -348,6 +446,7 @@
             groups[c].push(item);
         });
 
+        // 증상 버튼 및 사이드바 생성
         Object.keys(groups).sort().forEach((cho, idx) => {
             const link = document.createElement('a');
             link.href = `#sec-${idx}`;
@@ -368,21 +467,26 @@
             main.appendChild(sec);
         });
 
-        // 모달 열기
+        // 부록 링크 추가
+        const appendixLink = document.createElement('a');
+        appendixLink.href = "#appendix";
+        appendixLink.className = 'nav-link';
+        appendixLink.innerHTML = "📚";
+        appendixLink.title = "TCI 가이드 부록";
+        sidebar.appendChild(appendixLink);
+
+        // 모달 제어
         function showModal(name) {
             const it = symptomsData.find(d => d[0] === name);
             if(!it) return;
-
             const tciInfo = getTciDetails(it[3]);
-
             document.getElementById('modalSymptomFront').innerText = it[0];
-            document.getElementById('modalSymptomBack').innerText = it[0]; // 뒷면 상단 추가
+            document.getElementById('modalSymptomBack').innerText = it[0];
             document.getElementById('modalCause').innerText = it[1];
             document.getElementById('modalAffirm').innerText = `"${it[2]}"`;
             document.getElementById('modalTciTag').innerText = tciInfo.tag;
             document.getElementById('modalTciDesc').innerText = it[4];
             document.getElementById('modalTciDetail').innerHTML = tciInfo.details;
-
             const m = document.getElementById('modal');
             m.style.display = 'flex';
             setTimeout(() => m.classList.add('show'), 10);
@@ -403,9 +507,10 @@
             document.getElementById('flipCard').classList.toggle('flipped');
         }
 
+        // 스크롤 시 사이드바 활성화
         window.addEventListener('scroll', () => {
             let curr = "";
-            document.querySelectorAll('.index-section').forEach(s => {
+            document.querySelectorAll('section').forEach(s => {
                 if(window.pageYOffset >= s.offsetTop - 150) curr = s.id;
             });
             document.querySelectorAll('.nav-link').forEach(l => {
