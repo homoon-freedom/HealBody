@@ -580,6 +580,13 @@ function filterSymptoms() {
                 if(l.getAttribute('href') === `#${curr}`) l.classList.add('active');
             });
         });
+        // 페이지 로드 시 최상단으로 이동
+window.onload = function() {
+    setTimeout(function() {
+        window.scrollTo(0, 0);
+    }, 10); // 브라우저 렌더링 타이밍에 맞추기 위해 약간의 지연을 줍니다.
+};
+
     </script>
 </body>
 </html>
