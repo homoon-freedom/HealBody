@@ -3,56 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>슬림 사이드바 - 중앙 플립 카드</title>
+    <title>심신 상관관계 인덱스</title>
     <style>
         /* 기본 설정 */
         html { scroll-behavior: smooth; scroll-padding-top: 40px; }
-        body { display: flex; margin: 0; font-family: 'Pretendard', sans-serif; background-color: #fcfcfc; }
+        body { display: flex; margin: 0; font-family: 'Pretendard', sans-serif; background-color: #fcfcfc; color: #333; }
 
         /* 사이드바 */
         .sidebar {
-            width: 60px; height: 100vh; background: #fff; position: fixed;
+            width: 65px; height: 100vh; background: #fff; position: fixed;
             top: 0; left: 0; display: flex; flex-direction: column;
             align-items: center; box-shadow: 2px 0 10px rgba(0,0,0,0.05); z-index: 1000;
+            overflow-y: auto; padding-top: 20px;
         }
         .sidebar a {
-            text-decoration: none; color: #888; width: 100%; padding: 12px 0;
-            text-align: center; font-size: 24px; font-weight: 800; transition: 0.2s;
+            text-decoration: none; color: #888; width: 100%; padding: 10px 0;
+            text-align: center; font-size: 16px; font-weight: 800; transition: 0.2s;
         }
         .sidebar a:hover { background: #f0f7ff; color: #007bff; }
         .sidebar a.active { background: #007bff; color: #fff; }
 
-        /* 콘텐츠 */
-        .content { margin-left: 60px; padding: 60px 40px; width: calc(100% - 60px); max-width: 1000px; }
+        /* 콘텐츠 영역 */
+        .content { margin-left: 65px; padding: 40px; width: calc(100% - 65px); max-width: 1000px; }
+        header { margin-bottom: 40px; border-bottom: 2px solid #007bff; padding-bottom: 20px; }
         .index-section { padding: 40px 0; border-bottom: 1px solid #eee; }
-        .index-section h2 { border-left: 5px solid #007bff; padding-left: 10px; margin-bottom: 20px; font-size: 1.5rem; }
+        .index-section h2 { border-left: 5px solid #007bff; padding-left: 15px; margin-bottom: 25px; font-size: 1.8rem; color: #007bff; }
 
-        /* 상자 리스트 (3열) */
-        .link-grid { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; padding: 0; }
-        .link-grid li { width: calc((100% / 3) - (20px / 3)); }
+        /* 카드 버튼 리스트 (3열) */
+        .link-grid { display: flex; flex-wrap: wrap; gap: 12px; list-style: none; padding: 0; }
+        .link-grid li { width: calc((100% / 3) - (24px / 3)); }
         .link-grid button {
-            width: 100%; height: 50px; background: #fff; border: 1px solid #e5e7eb;
-            border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 500;
-            transition: all 0.2s;
+            width: 100%; min-height: 60px; background: #fff; border: 1px solid #e5e7eb;
+            border-radius: 10px; cursor: pointer; font-size: 0.95rem; font-weight: 600;
+            transition: all 0.2s; padding: 10px; line-height: 1.4; word-break: keep-all;
         }
-        .link-grid button:hover { border-color: #007bff; color: #007bff; background: #f8fbff; }
+        .link-grid button:hover { border-color: #007bff; color: #007bff; background: #f8fbff; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
-        /* --- 모달 (중앙 정렬 제어) --- */
+        /* --- 모달 시스템 --- */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 2000; 
-            justify-content: center; align-items: center; /* 자식 요소를 정중앙에 배치 */
-            backdrop-filter: blur(3px);
+            background: rgba(0,0,0,0.6); z-index: 2000; 
+            justify-content: center; align-items: center;
+            backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease;
         }
-        .modal.show { display: flex; }
+        .modal.show { display: flex; opacity: 1; }
 
-        /* --- 카드 크기 축소 및 설정 --- */
         .card-container {
-            width: 280px;  /* 기존 320px에서 축소 */
-            height: 380px; /* 기존 450px에서 축소 */
-            perspective: 1000px;
-            position: relative;
+            width: 300px; height: 420px; perspective: 1000px; position: relative;
+            transform: translateY(30px); transition: transform 0.3s ease-out;
         }
+        .modal.show .card-container { transform: translateY(0); }
+
         .card {
             width: 100%; height: 100%; position: relative;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -63,7 +64,7 @@
         .card-face {
             position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); padding: 25px; 
+            border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); padding: 30px; 
             text-align: center; box-sizing: border-box;
         }
         .card-front { background: white; border: 1px solid #eee; }
@@ -71,83 +72,250 @@
 
         /* 닫기 버튼 */
         .close-btn {
-            position: absolute; top: -45px; right: -5px; background: none; border: none;
-            color: white; font-size: 2.2rem; cursor: pointer; line-height: 1;
+            position: absolute; top: -50px; right: 0; background: none; border: none;
+            color: white; font-size: 3rem; cursor: pointer; line-height: 1;
         }
 
-        @media (max-width: 768px) { .link-grid li { width: calc(50% - 5px); } }
+        @media (max-width: 768px) { 
+            .link-grid li { width: calc(50% - 6px); } 
+            .content { padding: 20px; }
+        }
     </style>
 </head>
 <body>
 
-    <nav class="sidebar">
-        <a href="#char-1" class="nav-link active">ㄱ</a>
-        <a href="#char-2" class="nav-link">ㄴ</a>
-        <a href="#char-8" class="nav-link">ㅇ</a>
-    </nav>
+    <nav class="sidebar" id="sidebarNav"></nav>
 
-    <main class="content">
+    <main class="content" id="mainContent">
         <header>
-            <h1 style="font-size: 1.8rem; margin-bottom: 5px;">인덱스 서비스</h1>
-            <p style="color: #888; font-size: 0.9rem;">항목을 클릭하면 중앙에 상세 카드가 나타납니다.</p>
+            <h1>몸의 증상과 마음의 원인</h1>
+            <p>질병은 마음의 메시지입니다. 증상을 클릭하여 내면의 원인을 확인하세요.</p>
         </header>
-        
-        <section id="char-1" class="index-section">
-            <h2>ㄱ</h2>
-            <ul class="link-grid">
-                <li><button onclick="openModal('가나다 서비스', '가나다 서비스의 핵심 기능을 설명하는 뒷면 영역입니다.')">가나다 서비스</button></li>
-                <li><button onclick="openModal('공지사항', '최신 공지 내용을 확인하세요.')">공지사항</button></li>
-                <li><button onclick="openModal('갤러리', '다양한 이미지를 감상하실 수 있습니다.')">갤러리</button></li>
-            </ul>
-        </section>
-
-        <section id="char-2" class="index-section">
-            <h2>ㄴ</h2>
-            <ul class="link-grid">
-                <li><button onclick="openModal('내 정보', '개인정보 설정을 변경할 수 있습니다.')">내 정보</button></li>
-            </ul>
-        </section>
-    </main>
+        </main>
 
     <div class="modal" id="modal" onclick="closeModal(event)">
         <div class="card-container">
             <button class="close-btn" onclick="closeModal(event)">&times;</button>
-            
             <div class="card" id="flipCard" onclick="flipCard(event)">
                 <div class="card-face card-front">
-                    <div style="font-size: 2rem; margin-bottom: 15px;">📄</div>
-                    <h3 id="modalTitle" style="margin: 0 0 10px 0; color: #333;">제목</h3>
-                    <p style="font-size: 0.85rem; color: #999;">카드를 클릭하면 내용을 확인합니다.</p>
+                    <div style="font-size: 3rem; margin-bottom: 20px;">🔍</div>
+                    <h2 id="modalSymptom" style="margin: 0 0 15px 0; color: #007bff;">증상</h2>
+                    <p id="modalCause" style="font-size: 1rem; color: #666; line-height: 1.5;"></p>
+                    <p style="margin-top: 30px; font-size: 0.8rem; color: #bbb;">(카드를 클릭하면 상세 안내를 봅니다)</p>
                 </div>
                 <div class="card-face card-back">
-                    <h3 style="margin-bottom: 15px;">상세 안내</h3>
-                    <p id="modalContent" style="font-size: 0.95rem; line-height: 1.5; word-break: keep-all;">내용</p>
-                    <div style="margin-top: 20px; font-size: 0.8rem; opacity: 0.8;">[ 확인 완료 ]</div>
+                    <h3 style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; width: 100%;">치유를 위한 확언</h3>
+                    <p id="modalDetail" style="font-size: 1.05rem; line-height: 1.7; word-break: keep-all;">
+                        "나는 내 마음의 소리에 귀를 기울입니다. 나는 이제 과거의 패턴을 놓고 자유롭게 변화를 받아들입니다."
+                    </p>
+                    <div style="margin-top: 30px; font-size: 0.8rem; opacity: 0.9; border: 1px solid #fff; padding: 7px 20px; border-radius: 25px;">확인 완료</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // 데이터셋
+        const data = [
+            { s: "가려움증", c: "불만족, 양심의 가책, 도망치거나 떠나고 싶은 간절한 갈망. 내 기질에 맞지 않는 욕구" },
+            { s: "복부 팽만(가스통)", c: "고정됨, 두려움, 소화되지 않은 생각들" },
+            { s: "가슴 통증", c: "많은 것을 원망하고 짜증내며 싫어하는 마음을 오래 가슴에 담아두는 것" },
+            { s: "가슴앓이", c: "두려움, 두려움을 부여잡는 것" },
+            { s: "가슴의 낭종, 혹, 염증", c: "과도한 모성애, 과잉보호, 지나치게 인내하는 태도, 양육을 배제하는 것" },
+            { s: "각막염", c: "극심한 분노, 누군가를 또는 무엇인가를 때리고 싶은 욕구" },
+            { s: "간 문제", c: "분노와 미숙한 감정의 근원" },
+            { s: "간염", c: "변화에 대한 저항. 두려움, 분노, 증오" },
+            { s: "간장병", c: "돈에 대한 부족감과 원망, 주위사람에게 원망과 짜증" },
+            { s: "간장염", c: "변화가 일어나는 것을 두려워하여 저항" },
+            { s: "간질", c: "박해의 느낌, 생명에 대한 거부, 크게 투쟁하는 느낌, 자기폭력" },
+            { s: "감기(유행성)", c: "대중적인 부인과 통념들에 대한 반응, 두려움, 통계에 대한 믿음" },
+            { s: "갑상선", c: "굴욕감, 나는 내가 원하는 일을 하게 된 적이 전혀없다, 내 차례는 언제쯤 올까" },
+            { s: "갑상선종", c: "상처입는 것을 싫어하는 것, 희생양이라고 느끼는 것, 실현되지 못함" },
+            { s: "건망증", c: "두려움, 삶에서 달아나는 것, 자신을 옹호하지 못하는 것" },
+            { s: "건선", c: "상처받는 것에 대한 두려움, 감각과 자기 자신에게 둔해짐, 감정에 책임지기 거부" },
+            { s: "건초열", c: "감정적 혼란, 관습에 대한 두려움, 박해받는다는 믿음, 죄의식" },
+            { s: "결막염", c: "자신이 지금 삶에서 바라보는 것에서 느끼는 분노와 좌절" },
+            { s: "결절", c: "분노와 욕구 불만과 직업상으로 상처받은 에고" },
+            { s: "결핵", c: "잔인한 생각, 복수심 또는 강한 이기심으로 스스로를 갉아먹는 결과" },
+            { s: "경련", c: "긴장, 두려움, 꽉 쥐고 매달리는 것" },
+            { s: "고혈압", c: "오랫동안 해결되지 않은 감정적 문제" },
+            { s: "골다공증", c: "내 삶을 지탱해줄 아무 것도 남아 있지 않다는 생각" },
+            { s: "골수염", c: "삶의 구조에 대한 분노와 짜증, 지원받지 못하고 있다는 느낌" },
+            { s: "곱사등", c: "주위사람들로부터 안전감과 사랑 같은 정서적인 영양이 공급되지 않을 때" },
+            { s: "과체중", c: "두려움, 보호를 필요로 함, 감정으로부터 도망침, 불안전함, 자기 거부" },
+            { s: "관상동맥혈전증", c: "혼자라고 느끼고 겁먹는 것, 충분히 쓸만하지 않다, 절대 해내지 못할거야" },
+            { s: "관절 통증", c: "완전히 끊는 마음으로 싫어하고 탓하며 원수 맺는 마음" },
+            { s: "관절염", c: "사랑받지 못한다는 느낌, 비난, 분노" },
+            { s: "광견병", c: "폭력만이 해결책이라는 믿음" },
+            { s: "괴저증", c: "병적인 마음상태, 독기 어린 생각들로 기쁨을 익사시키는 것" },
+            { s: "구강궤양", c: "입안에 가둬져 곪아버린 말, 비난하는 것" },
+            { s: "구루병", c: "정서적으로 메마른 상태, 사랑과 안전의 결여" },
+            { s: "굳은 살", c: "딱딱해진 개념과 생각들, 굳어버린 두려움" },
+            { s: "궤양", c: "스스로 세운 기준에 자신이 미치지 못 한다고 강하게 믿음" },
+            { s: "귀 문제", c: "남의 말을 듣기 싫어하고 자신의 주장만 고집하는 것" },
+            { s: "귀앓이", c: "분노, 듣고 싶지 않아 하는 것, 너무 많은 혼란" },
+            { s: "근시", c: "미래에 대한 두려움" },
+            { s: "근육위축증", c: "극심한 두려움, 모든 것을 조종하려는 욕구, 신뢰 결여" },
+            { s: "기관지염", c: "들끓는 가정환경, 분란, 말다툼" },
+            { s: "기생충", c: "자신의 능력을 타자에게 넘겼을 때" },
+            { s: "나병", c: "삶을 통제할 수 없음, 쓸모없다는 믿음" },
+            { s: "난시", c: "“나는 고생한다.”는 의식, 자신을 보기를 두려워함" },
+            { s: "난청", c: "거부와 완고함, 고립, 듣고 싶지 않음" },
+            { s: "낭종", c: "고통스런 옛영화를 상영하는 것, 상처를 키우는 것" },
+            { s: "내사시", c: "밖에 있는 것을 보고 싶어하지 않는 것" },
+            { s: "냄새 문제", c: "남을 많이 원망하고 탓하는 마음" },
+            { s: "녹내장", c: "완강하게 용서하지 못하는 것, 오래된 상처" },
+            { s: "농양", c: "상처와 모욕과 복수에 대한 생각으로 들끓는 것" },
+            { s: "뇌일혈", c: "포기, 저항, 삶에 대한 거부" },
+            { s: "뇌종양", c: "부정확한 믿음, 완고함, 변화 거부" },
+            { s: "눈 문제", c: "자신의 삶에서 보는 것을 좋아하지 않는 것" },
+            { s: "눈병", c: "상대를 잘못보고 불만과 미움" },
+            { s: "다래끼", c: "울화가 치민 상태" },
+            { s: "다리 통증", c: "주위 사람들에 대한 싫어하는 마음" },
+            { s: "다발성 경화증", c: "심리적으로 경직된 상태, 두려움" },
+            { s: "담석", c: "저주, 굳어진 생각, 비난" },
+            { s: "당뇨병", c: "어떤 일이 일어나기를 갈망, 통제하려는 욕구, 깊은 슬픔" },
+            { s: "대상포진", c: "두려움과 긴장, 지나치게 예민함" },
+            { s: "대장염", c: "억압감과 패배감, 애정 결핍" },
+            { s: "동맥경화증", c: "저항, 긴장, 굳어진 편협함" },
+            { s: "두드러기", c: "작고 숨겨진 두려움" },
+            { s: "두통", c: "자신을 무효화하는 것, 자기 비판" },
+            { s: "디스크", c: "삶의 지지를 받지 못한다는 느낌" },
+            { s: "류머티즘", c: "희생자라는 느낌, 사랑 결핍, 분노" },
+            { s: "만성병", c: "변하기를 거부하는 것, 미래에 대한 두려움" },
+            { s: "말더듬", c: "안전하지 않다, 자기 표현의 결여" },
+            { s: "멀미", c: "두려움, 통제되지 않음" },
+            { s: "목문제", c: "완고함, 경직성" },
+            { s: "무감동", c: "느끼길 거부하는 것" },
+            { s: "무릎문제", c: "고집스런 에고와 자존심" },
+            { s: "무좀", c: "원망하는 마음" },
+            { s: "물집", c: "저항, 감정적 방어 결여" },
+            { s: "미식거림", c: "두려움, 체험에 대한 저항" },
+            { s: "발문제", c: "미래와 삶 속으로 들어가지 못하는 두려움" },
+            { s: "발기불능", c: "성적 압박감, 죄책감" },
+            { s: "발진", c: "짜증, 주의를 끌려는 방식" },
+            { s: "방광 문제", c: "불안, 낡은 관념" },
+            { s: "백내장", c: "기쁨 없이 미래를 보는 것" },
+            { s: "백혈병", c: "무슨 소용이 있담?, 폭력적 생각" },
+            { s: "변비", c: "낡은 관념을 놓지 못함" },
+            { s: "복통", c: "초조, 짜증" },
+            { s: "부종", c: "내려놓지 못하는 것" },
+            { s: "불면증", c: "두려움, 삶에 대한 불신" },
+            { s: "불안", c: "삶의 흐름을 믿지 못하는 것" },
+            { s: "불임", c: "두려움과 저항" },
+            { s: "비만", c: "보호를 상징, 불안" },
+            { s: "빈혈", c: "쓸모없다는 느낌" },
+            { s: "뻣뻣함", c: "경직된 생각" },
+            { s: "사마귀", c: "증오의 사소한 표현" },
+            { s: "설사", c: "두려움, 거부" },
+            { s: "소화불량", c: "쓸모없다는 믿음" },
+            { s: "수면발작", c: "극심한 두려움, 떠나고 싶음" },
+            { s: "숨가쁨", c: "두려움, 변화 저항" },
+            { s: "습진", c: "마음의 폭발" },
+            { s: "식욕과잉", c: "두려움, 보호 욕구" },
+            { s: "식욕상실", c: "두려움, 삶 불신" },
+            { s: "신경과민", c: "두려움, 염려, 불신" },
+            { s: "신경통", c: "죄에 대한 징벌" },
+            { s: "심장문제", c: "기쁨 결여, 감정 문제" },
+            { s: "암", c: "깊은 상처, 오래된 분노" },
+            { s: "알코올중독", c: "죄의식, 자기거부" },
+            { s: "여드름", c: "사랑받지 못한다고 느낌" },
+            { s: "염증", c: "분노, 짜증" },
+            { s: "우울", c: "삶을 받아들이지 못함" },
+            { s: "위염", c: "오래된 불확실성" },
+            { s: "위장문제", c: "두려움, 새로운 것 거부" },
+            { s: "이명", c: "듣기를 거부, 내면 무시" },
+            { s: "입문제", c: "닫힌 마음" },
+            { s: "자궁문제", c: "원망" },
+            { s: "자살 충동", c: "흑백논리" },
+            { s: "장염", c: "낡은 생각의 퇴적" },
+            { s: "저혈압", c: "패배주의" },
+            { s: "정맥류", c: "싫은 상황, 낙담" },
+            { s: "종양", c: "상처를 오래 품음" },
+            { s: "좌골신경통", c: "돈과 미래에 대한 두려움" },
+            { s: "중독", c: "자신에게서 도망" },
+            { s: "질식성 발작", c: "삶을 믿지 않음" },
+            { s: "척추문제", c: "삶의 지지 부족" },
+            { s: "천식", c: "감정 억압" },
+            { s: "치질", c: "과거 집착" },
+            { s: "코피", c: "인정 욕구" },
+            { s: "탈모", c: "두려움, 통제 욕구" },
+            { s: "편두통", c: "강제당함에 대한 혐오" },
+            { s: "폐문제", c: "삶을 받아들이기 어려움" },
+            { s: "피로", c: "저항, 지겨움" },
+            { s: "피부문제", c: "공포, 위협 느낌" },
+            { s: "항문 가려움", c: "죄의식" },
+            { s: "허벅지 통증", c: "어린 시절 상처" },
+            { s: "현기증", c: "혼란, 현실 회피" },
+            { s: "호흡문제", c: "삶을 받아들이지 못함" },
+            { s: "화상", c: "분노" },
+            { s: "후두염", c: "말하지 못하는 분노" }
+        ];
+
+        // 초성 추출 함수 (한글만 해당)
+        function getChoSung(str) {
+            const cho = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+            const code = str.charCodeAt(0) - 44032;
+            if (code > -1 && code < 11172) return cho[Math.floor(code / 588)];
+            return str.charAt(0);
+        }
+
+        // 페이지 초기화
+        const sidebarNav = document.getElementById('sidebarNav');
+        const mainContent = document.getElementById('mainContent');
+        const groups = {};
+
+        // 데이터를 초성별로 그룹화
+        data.forEach(item => {
+            const cho = getChoSung(item.s);
+            if (!groups[cho]) groups[cho] = [];
+            groups[cho].push(item);
+        });
+
+        // HTML 생성
+        Object.keys(groups).sort().forEach((cho, index) => {
+            // 사이드바 링크
+            const navLink = document.createElement('a');
+            navLink.href = `#cho-${index}`;
+            navLink.className = 'nav-link';
+            navLink.innerText = cho;
+            sidebarNav.appendChild(navLink);
+
+            // 섹션 내용
+            const section = document.createElement('section');
+            section.id = `cho-${index}`;
+            section.className = 'index-section';
+            section.innerHTML = `<h2>${cho}</h2><ul class="link-grid"></ul>`;
+            
+            const ul = section.querySelector('ul');
+            groups[cho].forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<button onclick="openModal('${item.s}', '${item.c}')">${item.s}</button>`;
+                ul.appendChild(li);
+            });
+            mainContent.appendChild(section);
+        });
+
+        // 모달 제어
         const modal = document.getElementById('modal');
         const flipCardElement = document.getElementById('flipCard');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalContent = document.getElementById('modalContent');
+        const modalSymptom = document.getElementById('modalSymptom');
+        const modalCause = document.getElementById('modalCause');
 
-        function openModal(title, content) {
-            modalTitle.innerText = title;
-            modalContent.innerText = content;
-            modal.classList.add('show');
+        function openModal(symptom, cause) {
+            modalSymptom.innerText = symptom;
+            modalCause.innerText = cause;
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
             document.body.style.overflow = 'hidden';
         }
 
         function closeModal(e) {
-            // 배경 클릭, 닫기버튼 클릭 시 닫기
-            if (e.target.id === 'modal' || e.target.className === 'close-btn' || e.target.innerText.includes('확인')) {
-                modal.classList.remove('show');
-                flipCardElement.classList.remove('flipped');
-                document.body.style.overflow = 'auto';
-            }
+            if (e.target.closest('.card') && !e.target.classList.contains('close-btn')) return;
+            modal.classList.remove('show');
+            flipCardElement.classList.remove('flipped');
+            document.body.style.overflow = 'auto';
+            setTimeout(() => { if (!modal.classList.contains('show')) modal.style.display = 'none'; }, 300);
         }
 
         function flipCard(e) {
@@ -155,15 +323,19 @@
             flipCardElement.classList.toggle('flipped');
         }
 
-        // 사이드바 활성화 처리
+        // ESC 지원 및 스크롤 스파이
+        window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(e); });
+        
         const navLinks = document.querySelectorAll('.nav-link');
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
+        const sections = document.querySelectorAll('.index-section');
+        window.addEventListener('scroll', () => {
+            let current = "";
+            sections.forEach(s => { if (pageYOffset >= s.offsetTop - 100) current = s.id; });
+            navLinks.forEach(l => {
+                l.classList.remove("active");
+                if (l.getAttribute("href").includes(current)) l.classList.add("active");
             });
         });
     </script>
-
 </body>
 </html>
