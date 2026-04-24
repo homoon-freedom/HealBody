@@ -44,8 +44,11 @@
         /* 버튼 그리드 */
         .link-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; list-style: none; padding: 0; }
         @media (min-width: 768px) { .link-grid { grid-template-columns: repeat(4, 1fr); } }
-        .link-grid button { width: 100%; min-height: 60px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; font-size: 1.0rem; font-weight: 600; padding: 10px; color: #334155; transition: 0.2s; word-break: keep-all; }
+        .link-grid button { width: 100%; min-height: 60px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; font-size: 1.0rem; font-weight: 600; padding: 10px; color: #334155; transition: 0.2s; word-break: keep-all; position: relative; overflow: hidden;}
         .link-grid button:hover { border-color: #007bff; color: #007bff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        
+        /* 검색 하이라이트 스타일 */
+        .highlight { background-color: #ffeb3b; color: #000; border-radius: 2px; }
 
         /* 부록 전용 버튼 스타일 */
         .appendix-btn { border-color: #007bff !important; color: #007bff !important; }
@@ -58,25 +61,14 @@
         .card.flipped { transform: rotateY(180deg); }
         .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 24px; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
 
-/* 부록용 긴 카드 스타일 */
-.card-container.tall {
-    height: 680px; /* 기존 520px에서 650px로 확장 (원하는 만큼 조절 가능) */
-}
-
-/* 모바일 대응: 화면 높이가 작을 경우 대비 */
-@media (max-height: 700px) {
-    .card-container.tall {
-        height: 90vh; 
-    }
-}
+        .card-container.tall { height: 680px; }
+        @media (max-height: 700px) { .card-container.tall { height: 90vh; } }
         
-        /* 카드 앞면 */
         .card-front { background: white; justify-content: center; align-items: center; text-align: center; }
         .card-front .card-category { font-size: 0.8rem; font-weight: 800; color: #007bff; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
         .card-front .card-main-title { font-size: 1.8rem; font-weight: 800; color: #0f172a; border-bottom: 5px solid #007bff; display: inline-block; margin-bottom: 20px; }
         .card-front .card-sub-text { font-size: 1.05rem; color: #475569; line-height: 1.6; word-break: keep-all; }
 
-        /* 카드 뒷면 */
         .card-back { background: #007bff; color: white; transform: rotateY(180deg); overflow-y: auto; }
         .card-back::-webkit-scrollbar { width: 5px; }
         .card-back::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
@@ -84,20 +76,9 @@
         .back-title { font-size: 1.3rem; font-weight: 800; text-align: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.3); }
         .back-section-label { font-size: 0.75rem; font-weight: 800; opacity: 0.9; border-left: 3px solid #fff; padding-left: 10px; margin: 15px 0 8px 0; }
         .back-desc { font-size: 0.95rem; line-height: 1.7; word-break: keep-all; }
-                .back-sub-item { background: rgba(255,255,255,0.15); padding: 15px; border-radius: 12px; font-size: 0.85rem; margin-top: 10px; line-height: 1.6; white-space: pre-line; }
+        .back-sub-item { background: rgba(255,255,255,0.15); padding: 15px; border-radius: 12px; font-size: 0.85rem; margin-top: 10px; line-height: 1.6; white-space: pre-line; }
         
         .close-btn { position: absolute; top: -55px; right: 0; background: none; border: none; color: white; font-size: 3rem; cursor: pointer; }
-  /* CSS 추가 */
-.tci-badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.2);
-    margin-right: 5px;
-    font-weight: bold;
-    font-size: 0.8rem;
-}
-
     </style>
 </head>
 <body>
@@ -142,12 +123,21 @@
     </div>
 
     <script>
+        /* --- 접속 시 최상단 이동 로직 --- */
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.onload = function() {
+            setTimeout(() => window.scrollTo(0, 0), 10);
+        };
+
         /* --- 데이터 정의 --- */
+        // (데이터 부분은 이전과 동일하므로 생략하지 않고 유지합니다)
         const symptomsData = [
             ["가려움증", "불만족, 양심의 가책, 도망치거나 떠나고 싶은 갈망. 내 기질에 맞지 않는 욕구", "나는 지금 이 자리에 만족하며 나의 진정한 욕구를 평화롭게 수용합니다.", "HA1↑ / SD5↓", "탈출 욕구와 습관 조절 능력 저하가 피부 자극으로 표출됩니다."],
             ["복부 팽만(가스통)", "고정됨, 두려움, 소화되지 않은 생각들", "나는 모든 새로운 생각과 경험을 편안하게 받아들입니다.", "HA2↑ / SD2↓", "불확실성에 대한 두려움이 에너지 흐름을 막아 복부 압력을 높입니다."],
             ["가슴 통증", "많은 것을 원망하고 짜증내며 싫어하는 마음을 오래 가슴에 담아두는 것", "나는 과거의 모든 원망을 기쁘게 흘려보냅니다.", "C2↓ / HA1↑", "공감 능력 저하와 예기불안이 흉부 근육의 긴장을 유발합니다."],
-            ["가슴앓이", "두려움, 두려움을 부여잡는 것", "나는 삶의 흐름을 신뢰하며 안전함을 느킵니다.", "HA1↑", "만성적인 예기불안이 자율신경계 과각성을 초래합니다."],
+            ["가슴앓이", "두려움, 두려움을 부여잡는 것", "나는 삶의 흐름을 신뢰하며 안전함을 느낍니다.", "HA1↑", "만성적인 예기불안이 자율신경계 과각성을 초래합니다."],
             ["가슴의 낭종, 혹, 염증", "과도한 모성애, 과잉보호, 지나치게 인내하는 태도, 양육을 배제하는 것", "나는 타인에게 자유를 주며 나 자신을 사랑으로 돌봅니다.", "RD2↑ / SD1↓", "의존적 양육 태도와 책임감의 불균형에서 형성됩니다."],
             ["각막염", "극심한 분노, 누군가를 또는 무엇인가를 때리고 싶은 욕구", "나는 세상을 사랑의 눈으로 보며 평화를 선택합니다.", "NS3↑ / C1↓", "충동적 공격성과 타인 수용 부족이 시각 기관의 염증을 일으킵니다."],
             ["간 문제", "분노와 미숙한 감정의 근원", "나는 미숙함을 벗고 사랑으로 성장합니다.", "NS2↑ / SD5↓", "자유분방한 기질과 습관 조절의 어려움이 간에 과부하를 줍니다."],
@@ -445,9 +435,8 @@
         function showAppendixModal(index) {
             const it = appendixData[index];
             if(!it) return;
-
-const container = document.querySelector('.card-container');
-    container.classList.add('tall');
+            const container = document.querySelector('.card-container');
+            container.classList.add('tall');
 
             document.getElementById('cardFront').innerHTML = `
                 <div class="card-category">TCI Master Guide</div>
@@ -478,62 +467,64 @@ const container = document.querySelector('.card-container');
             document.body.style.overflow = 'hidden';
         }
 
-function closeModal(e) {
-    if (e.target.closest('.card') && !e.target.classList.contains('close-btn')) return;
-    const m = document.getElementById('modal');
-    const container = document.querySelector('.card-container'); // 추가
-    
-    m.classList.remove('show');
-    document.getElementById('flipCard').classList.remove('flipped');
-    document.body.style.overflow = 'auto';
-    
-    setTimeout(() => {
-        m.style.display = 'none';
-        container.classList.remove('tall'); // 👇 닫힐 때 높이 클래스 제거
-    }, 300);
-}
+        function closeModal(e) {
+            if (e.target.closest('.card') && !e.target.classList.contains('close-btn')) return;
+            const m = document.getElementById('modal');
+            const container = document.querySelector('.card-container');
+            
+            m.classList.remove('show');
+            document.getElementById('flipCard').classList.remove('flipped');
+            document.body.style.overflow = 'auto';
+            
+            setTimeout(() => {
+                m.style.display = 'none';
+                container.classList.remove('tall');
+            }, 300);
+        }
+
         function flipCard(e) {
             e.stopPropagation();
             document.getElementById('flipCard').classList.toggle('flipped');
         }
 
-// filterSymptoms 함수 내부에 추가 제안
-function filterSymptoms() {
-    const query = document.getElementById('searchInput').value.trim().toLowerCase();
-    document.querySelectorAll('.index-section').forEach(section => {
-        if (section.id === 'appendix') return;
-        let match = false;
-        section.querySelectorAll('li').forEach(li => {
-            const btn = li.querySelector('button');
-            const text = btn.innerText.toLowerCase();
-            if (text.includes(query)) {
-                li.style.display = "";
-                match = true;
-                // 검색어 강조 (선택 사항)
-                if(query !== "") {
-                    btn.innerHTML = it[0].replace(new RegExp(query, 'gi'), (m) => `<span style="background: #ffeb3b;">${m}</span>`);
-                }
-            } else { 
-                li.style.display = "none"; 
-            }
-        });
-        section.style.display = match ? "" : "none";
-    });
-}
+        /* --- 검색 필터 및 하이라이트 --- */
+        function filterSymptoms() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            document.querySelectorAll('.index-section').forEach(section => {
+                if (section.id === 'appendix') return;
+                let match = false;
+                section.querySelectorAll('li').forEach(li => {
+                    const btn = li.querySelector('button');
+                    const originalText = btn.getAttribute('data-name') || btn.innerText;
+                    if (!btn.hasAttribute('data-name')) btn.setAttribute('data-name', originalText);
 
+                    if (originalText.toLowerCase().includes(query)) {
+                        li.style.display = ""; 
+                        match = true;
+                        if (query !== "") {
+                            const regex = new RegExp(`(${query})`, "gi");
+                            btn.innerHTML = originalText.replace(regex, '<span class="highlight">$1</span>');
+                        } else {
+                            btn.innerHTML = originalText;
+                        }
+                    } else { 
+                        li.style.display = "none"; 
+                    }
+                });
+                section.style.display = match ? "" : "none";
+            });
+        }
 
-        // 초기화
+        /* --- 초기화 로직 --- */
         const mainContent = document.getElementById('mainContent');
         const sidebarNav = document.getElementById('sidebarNav');
         const groups = {};
 
         function getCho(str) {
-            const cho = ["ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+            const choList = ["ㄱ", "ㄱ", "ㄴ", "ㄷ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅂ", "ㅅ", "ㅅ", "ㅇ", "ㅈ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
             const code = str.charCodeAt(0) - 44032;
             if (code > -1 && code < 11172) {
-                const idx = Math.floor(code / 588);
-                const choList = ["ㄱ", "ㄱ", "ㄴ", "ㄷ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅂ", "ㅅ", "ㅅ", "ㅇ", "ㅈ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
-                return choList[idx];
+                return choList[Math.floor(code / 588)];
             }
             return "기타";
         }
@@ -580,13 +571,6 @@ function filterSymptoms() {
                 if(l.getAttribute('href') === `#${curr}`) l.classList.add('active');
             });
         });
-        // 페이지 로드 시 최상단으로 이동
-window.onload = function() {
-    setTimeout(function() {
-        window.scrollTo(0, 0);
-    }, 10); // 브라우저 렌더링 타이밍에 맞추기 위해 약간의 지연을 줍니다.
-};
-
     </script>
 </body>
 </html>
