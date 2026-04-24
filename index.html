@@ -391,7 +391,7 @@
             const sortedKeys = Object.keys(tciMap).sort((a, b) => b.length - a.length);
             sortedKeys.forEach(key => {
                 const regex = new RegExp(`(?<![a-zA-Z0-9])${key}(?![a-zA-Z0-9])`, 'g');
-                if (regex.test(rawText)) descriptions.push(`• <b>${tciMap[key][0]}:</b> ${tciMap[key][1]}`);
+                if (regex.test(rawText)) descriptions.push(`<b>${tciMap[key][0]}:</b> ${tciMap[key][1]}`);
             });
             let formattedTag = rawText;
             sortedKeys.forEach(key => {
@@ -447,7 +447,7 @@ const container = document.querySelector('.card-container');
 
             let itemsHtml = it.content.map(c => `
                 <div style="margin-bottom: 12px;">
-                    <b style="color: #fff; font-size: 0.9rem;">• ${c.label}:</b><br>
+                    <b style="color: #fff; font-size: 0.9rem;">${c.label}:</b><br>
                     <span style="font-size: 0.85rem; opacity: 0.9;">${c.desc}</span>
                 </div>
             `).join("");
