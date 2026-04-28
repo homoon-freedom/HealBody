@@ -6,7 +6,7 @@
     <title>심신 상관관계 & TCI 마스터 도감</title>
     <style>
         /* 기본 레이아웃 */
-        html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+        html { scroll-behavior: auto; scroll-padding-top: 100px; }
         body { display: flex; margin: 0; font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f8fafc; color: #1e293b; }
 
         /* 사이드바 */
@@ -123,13 +123,25 @@
     </div>
 
     <script>
-        /* --- 접속 시 최상단 이동 로직 --- */
-        if ('scrollRestoration' in history) {
-            history.scrollRestoration = 'manual';
-        }
-        window.onload = function() {
-            setTimeout(() => window.scrollTo(0, 0), 10);
-        };
+/* --- 접속 시 최상단 이동 로직 보강 --- */
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual'; // 브라우저의 스크롤 복구 기능 강제 비활성화
+}
+
+// 1. DOM 구조가 잡히자마자 실행
+document.addEventListener('DOMContentLoaded', () => {
+    window.scrollTo(0, 0);
+});
+
+// 2. 모든 리소스(이미지 등)가 로드된 후 다시 한번 실행 (안전장치)
+window.onload = function() {
+    setTimeout(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'auto' // 부드러운 효과 없이 즉시 이동
+        });
+    }, 0);
+};
 
         /* --- 데이터 정의 --- */
         // (데이터 부분은 이전과 동일하므로 생략하지 않고 유지합니다)
@@ -571,6 +583,8 @@
                 if(l.getAttribute('href') === `#${curr}`) l.classList.add('active');
             });
         });
+// 초기 로드 시 첫 번째 내비게이션 활성화
+document.querySelector('.nav-link')?.classList.add('active');
     </script>
 </body>
 </html>
